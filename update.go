@@ -27,8 +27,8 @@ func (cmd *UpdateCmd) Run(ctx *Context) error {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Printf("Updating profile %q (press Enter to keep current value):\n", cmd.Name)
 
-	profile.Name = promptWithDefault(scanner, "user.name", profile.Name)
-	profile.Email = promptWithDefault(scanner, "user.email", profile.Email)
+	profile.Name = promptRequiredWithDefault(scanner, "user.name", profile.Name)
+	profile.Email = promptRequiredWithDefault(scanner, "user.email", profile.Email)
 	profile.SigningKey = promptWithDefault(scanner, "user.signingkey - GPG key ID, run 'gpg --list-secret-keys --keyid-format long' to find it", profile.SigningKey)
 
 	gpgDefault := "n"
@@ -50,16 +50,3 @@ func (cmd *UpdateCmd) Run(ctx *Context) error {
 	return nil
 }
 
-func promptWithDefault(scanner *bufio.Scanner, label, current string) string {
-	if current != "" {
-		fmt.Printf("  %s [%s]: ", label, current)
-	} else {
-		fmt.Printf("  %s: ", label)
-	}
-	scanner.Scan()
-	input := strings.TrimSpace(scanner.Text())
-	if input == "" {
-		return current
-	}
-	return input
-}

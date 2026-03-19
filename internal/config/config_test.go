@@ -1,6 +1,7 @@
 package config
 
 import (
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -114,6 +115,29 @@ func TestSaveCreatesDirectory(t *testing.T) {
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		t.Fatal("config file was not created")
+	}
+}
+
+func TestSaveFilePermissions(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "profiles.yaml")
+
+	cfg := &Config{Profiles: map[string]Profile{
+		"test": {Name: "Test", Email: "test@test.com"},
+	}}
+
+	if err := Save(path, cfg); err != nil {
+		t.Fatalf("Save() error: %v", err)
+	}
+
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatalf("Stat() error: %v", err)
+	}
+
+	want := fs.FileMode(0o600)
+	got := info.Mode().Perm()
+	if got != want {
+		t.Errorf("file permissions = %o, want %o", got, want)
 	}
 }
 

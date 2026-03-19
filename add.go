@@ -26,8 +26,8 @@ func (cmd *AddCmd) Run(ctx *Context) error {
 	scanner := bufio.NewScanner(os.Stdin)
 	profile := config.Profile{}
 
-	profile.Name = prompt(scanner, "user.name")
-	profile.Email = prompt(scanner, "user.email")
+	profile.Name = promptRequired(scanner, "user.name")
+	profile.Email = promptRequired(scanner, "user.email")
 	profile.SigningKey = prompt(scanner, "user.signingkey - GPG key ID, run 'gpg --list-secret-keys --keyid-format long' to find it (optional, Enter to skip)")
 
 	gpg := prompt(scanner, "commit.gpgsign [y/N]")
@@ -45,8 +45,3 @@ func (cmd *AddCmd) Run(ctx *Context) error {
 	return nil
 }
 
-func prompt(scanner *bufio.Scanner, label string) string {
-	fmt.Printf("  %s: ", label)
-	scanner.Scan()
-	return strings.TrimSpace(scanner.Text())
-}
