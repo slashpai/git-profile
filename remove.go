@@ -17,7 +17,7 @@ func (cmd *RemoveCmd) Run(ctx *Context) error {
 	}
 
 	if _, exists := cfg.Profiles[cmd.Name]; !exists {
-		return fmt.Errorf("profile %q not found", cmd.Name)
+		return cfg.ProfileNotFoundError(cmd.Name)
 	}
 
 	delete(cfg.Profiles, cmd.Name)

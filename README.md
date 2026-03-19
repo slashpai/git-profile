@@ -29,13 +29,16 @@ git-profile add personal
 
 You'll be prompted for:
 
-```prompt
+```
   user.name: John Doe
   user.email: john@personal.com
-  user.signingkey (optional, Enter to skip): ABC123DEF
+  user.signingkey - GPG key ID (optional, Enter to skip): ABC123DEF
   commit.gpgsign [y/N]: y
-  SSH key path (optional, Enter to skip): ~/.ssh/id_ed25519_personal
+  SSH key path, e.g. ~/.ssh/id_ed25519 (optional, Enter to skip): ~/.ssh/id_ed25519_personal
 ```
+
+> [!TIP]
+> To find your GPG key ID, run `gpg --list-secret-keys --keyid-format long`. The key ID is the hex string after the algorithm (e.g. `ed25519/ABC123DEF`).
 
 ### List profiles
 

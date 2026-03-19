@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 
 	"go.yaml.in/yaml/v3"
 )
@@ -47,6 +49,18 @@ func Load(path string) (*Config, error) {
 	}
 
 	return &cfg, nil
+}
+
+func (cfg *Config) ProfileNotFoundError(name string) error {
+	if len(cfg.Profiles) == 0 {
+		return fmt.Errorf("profile %q not found (no profiles configured, use 'git-profile add <name>' to create one)", name)
+	}
+	names := make([]string, 0, len(cfg.Profiles))
+	for n := range cfg.Profiles {
+		names = append(names, n)
+	}
+	sort.Strings(names)
+	return fmt.Errorf("profile %q not found. Available profiles: %s (use 'git-profile list' to see all profiles)", name, strings.Join(names, ", "))
 }
 
 func Save(path string, cfg *Config) error {

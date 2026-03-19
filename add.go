@@ -28,12 +28,12 @@ func (cmd *AddCmd) Run(ctx *Context) error {
 
 	profile.Name = prompt(scanner, "user.name")
 	profile.Email = prompt(scanner, "user.email")
-	profile.SigningKey = prompt(scanner, "user.signingkey (optional, Enter to skip)")
+	profile.SigningKey = prompt(scanner, "user.signingkey - GPG key ID, run 'gpg --list-secret-keys --keyid-format long' to find it (optional, Enter to skip)")
 
 	gpg := prompt(scanner, "commit.gpgsign [y/N]")
 	profile.GPGSign = strings.EqualFold(gpg, "y") || strings.EqualFold(gpg, "yes")
 
-	profile.SSHKey = prompt(scanner, "SSH key path (optional, Enter to skip)")
+	profile.SSHKey = prompt(scanner, "SSH key path, e.g. ~/.ssh/id_ed25519 (optional, Enter to skip)")
 
 	cfg.Profiles[cmd.Name] = profile
 

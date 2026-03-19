@@ -20,7 +20,7 @@ func (cmd *UseCmd) Run(ctx *Context) error {
 
 	profile, exists := cfg.Profiles[cmd.Name]
 	if !exists {
-		return fmt.Errorf("profile %q not found", cmd.Name)
+		return cfg.ProfileNotFoundError(cmd.Name)
 	}
 
 	scope := git.ScopeLocal
