@@ -95,7 +95,12 @@ git-profile rm personal
 
 ## Config File
 
-Profiles are stored in `~/.git-profiles.yaml`. You can override the path with `--config`:
+Profiles are stored in `~/.git-profiles.yaml`. The file is created automatically the first time you add a profile.
+
+> [!NOTE]
+> No config file is needed to get started. If the file doesn't exist, the tool treats it as an empty config. Commands like `list` will show no profiles, and `show` reads directly from `git config` so it works regardless of whether any profiles have been saved.
+
+You can override the path with `--config`:
 
 ```bash
 git-profile --config /path/to/profiles.yaml list
