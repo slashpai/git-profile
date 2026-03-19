@@ -9,13 +9,16 @@ ifeq (run,$(firstword $(MAKECMDGOALS)))
   $(eval $(RUN_ARGS):;@:)
 endif
 
-.PHONY: build install clean fmt vet test run help
+.PHONY: build install local-install clean fmt vet test run help
 
 build: ## Build the binary
 	go build $(LDFLAGS) -o $(BINARY) .
 
 install: ## Install to $GOPATH/bin
 	go install $(LDFLAGS) .
+
+local-install: build ## Build and install to /usr/local/bin
+	sudo cp $(BINARY) /usr/local/bin/$(BINARY)
 
 clean: ## Remove built binary
 	rm -f $(BINARY)

@@ -13,9 +13,11 @@ Or build from source:
 ```bash
 git clone https://github.com/slashpai/git-profile.git
 cd git-profile
-make build
-sudo mv git-profile /usr/local/bin/
+make local-install
 ```
+
+> [!NOTE]
+> `make local-install` builds the binary and copies it to `/usr/local/bin` (requires sudo).
 
 ## Usage
 
@@ -59,6 +61,9 @@ git-profile use personal
 ```bash
 git-profile use work --global
 ```
+
+> [!WARNING]
+> Using `--global` will overwrite your global git config for `user.name`, `user.email`, `user.signingkey`, and `commit.gpgsign`.
 
 ### Show current identity
 
@@ -111,4 +116,6 @@ profiles:
 ## How It Works
 
 - `git-profile use <name>` applies the profile by running `git config --local` (or `--global` with the flag) for `user.name`, `user.email`, `user.signingkey`, and `commit.gpgsign`.
-- The SSH key field is stored for your reference only and is not applied via git config.
+
+> [!TIP]
+> The SSH key field is stored for your reference only and is not applied via git config. It helps you remember which key goes with which profile.
