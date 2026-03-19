@@ -1,2 +1,114 @@
 # git-profile
-Manage multiple git profile easily
+
+Manage multiple git profiles easily. Switch between different git identities (name, email, GPG signing key) across repositories with a single command.
+
+## Install
+
+```bash
+go install github.com/slashpai/git-profile@latest
+```
+
+Or build from source:
+
+```bash
+git clone https://github.com/slashpai/git-profile.git
+cd git-profile
+make build
+sudo mv git-profile /usr/local/bin/
+```
+
+## Usage
+
+### Add a profile
+
+```bash
+git-profile add personal
+```
+
+You'll be prompted for:
+
+```prompt
+  user.name: John Doe
+  user.email: john@personal.com
+  user.signingkey (optional, Enter to skip): ABC123DEF
+  commit.gpgsign [y/N]: y
+  SSH key path (optional, Enter to skip): ~/.ssh/id_ed25519_personal
+```
+
+### List profiles
+
+```bash
+git-profile list
+```
+
+```shell
+PROFILE   NAME            EMAIL              SIGNING KEY  GPG SIGN  SSH KEY
+-------   ----            -----              -----------  --------  -------
+personal  John Doe   john@personal.com  ABC123DEF    yes       ~/.ssh/id_ed25519_personal
+work      John Doe   john@company.com   XYZ789       yes       ~/.ssh/id_ed25519_work
+```
+
+### Switch profile (per-repo)
+
+```bash
+git-profile use personal
+```
+
+### Switch profile (global)
+
+```bash
+git-profile use work --global
+```
+
+### Show current identity
+
+```bash
+git-profile show
+```
+
+```shell
+Current git identity:
+  user.name        = John Doe
+  user.email       = john@personal.com
+  user.signingkey  = ABC123DEF
+  commit.gpgsign   = true
+```
+
+### Remove a profile
+
+```bash
+git-profile remove personal
+# or
+git-profile rm personal
+```
+
+## Config File
+
+Profiles are stored in `~/.git-profiles.yaml`. You can override the path with `--config`:
+
+```bash
+git-profile --config /path/to/profiles.yaml list
+```
+
+Example config:
+
+```yaml
+profiles:
+  personal:
+    name: John Doe
+    email: john@personal.com
+    signingkey: ABC123DEF
+    gpgsign: true
+    sshkey: ~/.ssh/id_ed25519_personal
+  work:
+    name: John Doe
+    email: john@company.com
+    signingkey: XYZ789
+    gpgsign: true
+    sshkey: ~/.ssh/id_ed25519_work
+```
+
+## How It Works
+
+- `git-profile use <name>` applies the profile by running `git config --local` (or `--global` with the flag) for `user.name`, `user.email`, `user.signingkey`, and `commit.gpgsign`.
+- The SSH key field is stored for your reference only and is not applied via git config.
