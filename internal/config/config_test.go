@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -113,6 +114,47 @@ func TestSaveCreatesDirectory(t *testing.T) {
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		t.Fatal("config file was not created")
+	}
+}
+
+func TestProfileNotFoundErrorEmpty(t *testing.T) {
+	cfg := &Config{Profiles: make(map[string]Profile)}
+	err := cfg.ProfileNotFoundError("work")
+
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	msg := err.Error()
+	if !strings.Contains(msg, `"work"`) {
+		t.Errorf("error should mention profile name, got: %s", msg)
+	}
+	if !strings.Contains(msg, "no profiles configured") {
+		t.Errorf("error should mention no profiles configured, got: %s", msg)
+	}
+	if !strings.Contains(msg, "git-profile add") {
+		t.Errorf("error should hint to use 'git-profile add', got: %s", msg)
+	}
+}
+
+func TestProfileNotFoundErrorWithProfiles(t *testing.T) {
+	cfg := &Config{Profiles: map[string]Profile{
+		"personal": {Name: "Alice", Email: "alice@home.com"},
+		"work":     {Name: "Alice", Email: "alice@work.com"},
+	}}
+	err := cfg.ProfileNotFoundError("typo")
+
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	msg := err.Error()
+	if !strings.Contains(msg, `"typo"`) {
+		t.Errorf("error should mention profile name, got: %s", msg)
+	}
+	if !strings.Contains(msg, "personal") || !strings.Contains(msg, "work") {
+		t.Errorf("error should list available profiles, got: %s", msg)
+	}
+	if !strings.Contains(msg, "git-profile list") {
+		t.Errorf("error should hint to use 'git-profile list', got: %s", msg)
 	}
 }
 

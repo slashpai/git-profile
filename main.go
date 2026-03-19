@@ -12,6 +12,7 @@ type CLI struct {
 	Version kong.VersionFlag `help:"Show version." short:"v"`
 
 	Add    AddCmd    `cmd:"" help:"Add a new git profile."`
+	Update UpdateCmd `cmd:"" help:"Update an existing git profile."`
 	Remove RemoveCmd `cmd:"" aliases:"rm" help:"Remove a saved git profile."`
 	List   ListCmd   `cmd:"" aliases:"ls" help:"List all saved git profiles."`
 	Use    UseCmd    `cmd:"" help:"Apply a git profile to the current repo or globally."`

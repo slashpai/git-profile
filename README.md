@@ -88,6 +88,24 @@ Use `--remotes` / `-r` to also display git remotes:
 git-profile show --remotes
 ```
 
+### Update a profile
+
+```bash
+git-profile update work
+```
+
+You'll be prompted with current values -- press Enter to keep them, or type a new value to change:
+
+```
+Updating profile "work" (press Enter to keep current value):
+  user.name [John Doe]:
+  user.email [john@company.com]: john.doe@newcompany.com
+  user.signingkey - GPG key ID [XYZ789]:
+  commit.gpgsign [y/N] [y]:
+  SSH key path, e.g. ~/.ssh/id_ed25519 [~/.ssh/id_ed25519_work]:
+Profile "work" updated.
+```
+
 ### Remove a profile
 
 ```bash
