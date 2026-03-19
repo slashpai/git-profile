@@ -79,6 +79,12 @@ Current git identity:
   commit.gpgsign   = true
 ```
 
+Use `--remotes` / `-r` to also display git remotes:
+
+```bash
+git-profile show --remotes
+```
+
 ### Remove a profile
 
 ```bash
