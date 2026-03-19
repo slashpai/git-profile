@@ -8,7 +8,8 @@ import (
 var version = "dev"
 
 type CLI struct {
-	Config string `help:"Path to config file." default:"${config_path}" type:"path"`
+	Config  string `help:"Path to config file." default:"${config_path}" type:"path"`
+	Version kong.VersionFlag `help:"Show version." short:"v"`
 
 	Add    AddCmd    `cmd:"" help:"Add a new git profile."`
 	Remove RemoveCmd `cmd:"" aliases:"rm" help:"Remove a saved git profile."`
@@ -26,7 +27,10 @@ func main() {
 	ctx := kong.Parse(&cli,
 		kong.Name("git-profile"),
 		kong.Description("Manage multiple git profiles easily."),
-		kong.Vars{"config_path": config.DefaultConfigPath()},
+		kong.Vars{
+			"config_path": config.DefaultConfigPath(),
+			"version":     version,
+		},
 		kong.UsageOnError(),
 	)
 	err := ctx.Run(&Context{ConfigPath: cli.Config})
