@@ -30,6 +30,19 @@ func GetConfig(key string) (string, error) {
 	return strings.TrimSpace(string(out)), nil
 }
 
+func GetRemotes() ([]string, error) {
+	cmd := exec.Command("git", "remote", "-v")
+	out, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("git remote -v: %w", err)
+	}
+	lines := strings.Split(strings.TrimSpace(string(out)), "\n")
+	if len(lines) == 1 && lines[0] == "" {
+		return nil, nil
+	}
+	return lines, nil
+}
+
 func UnsetConfig(scope Scope, key string) error {
 	cmd := exec.Command("git", "config", string(scope), "--unset", key)
 	if out, err := cmd.CombinedOutput(); err != nil {

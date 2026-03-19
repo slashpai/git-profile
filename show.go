@@ -6,7 +6,9 @@ import (
 	"github.com/slashpai/git-profile/internal/git"
 )
 
-type ShowCmd struct{}
+type ShowCmd struct {
+	Remotes bool `help:"Also show git remotes." short:"r"`
+}
 
 func (cmd *ShowCmd) Run(ctx *Context) error {
 	fields := []struct {
@@ -26,6 +28,21 @@ func (cmd *ShowCmd) Run(ctx *Context) error {
 			val = "(not set)"
 		}
 		fmt.Printf("  %-16s = %s\n", f.label, val)
+	}
+
+	if cmd.Remotes {
+		remotes, err := git.GetRemotes()
+		if err != nil {
+			return err
+		}
+		fmt.Println("\nRemotes:")
+		if len(remotes) == 0 {
+			fmt.Println("  (none)")
+		} else {
+			for _, r := range remotes {
+				fmt.Printf("  %s\n", r)
+			}
+		}
 	}
 
 	return nil
