@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/alecthomas/kong"
 	"github.com/slashpai/git-profile/internal/config"
 )
@@ -24,16 +27,22 @@ type Context struct {
 }
 
 func main() {
+	defaultCfgPath, err := config.DefaultConfigPath()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
 	var cli CLI
 	ctx := kong.Parse(&cli,
 		kong.Name("git-profile"),
 		kong.Description("Manage multiple git profiles easily."),
 		kong.Vars{
-			"config_path": config.DefaultConfigPath(),
+			"config_path": defaultCfgPath,
 			"version":     version,
 		},
 		kong.UsageOnError(),
 	)
-	err := ctx.Run(&Context{ConfigPath: cli.Config})
+	err = ctx.Run(&Context{ConfigPath: cli.Config})
 	ctx.FatalIfErrorf(err)
 }

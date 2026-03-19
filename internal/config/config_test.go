@@ -14,9 +14,28 @@ func TestDefaultConfigPath(t *testing.T) {
 		t.Fatalf("failed to get home dir: %v", err)
 	}
 	want := filepath.Join(home, ".git-profiles.yaml")
-	got := DefaultConfigPath()
+	got, err := DefaultConfigPath()
+	if err != nil {
+		t.Fatalf("DefaultConfigPath() returned error: %v", err)
+	}
 	if got != want {
 		t.Errorf("DefaultConfigPath() = %q, want %q", got, want)
+	}
+}
+
+func TestValidateProfileName(t *testing.T) {
+	valid := []string{"personal", "work", "my-org", "work_2", "github.com", "A1"}
+	for _, name := range valid {
+		if err := ValidateProfileName(name); err != nil {
+			t.Errorf("ValidateProfileName(%q) should be valid, got: %v", name, err)
+		}
+	}
+
+	invalid := []string{"", "-dash", ".dot", "has space", "new\nline", "tab\there", "special!char", "/slash"}
+	for _, name := range invalid {
+		if err := ValidateProfileName(name); err == nil {
+			t.Errorf("ValidateProfileName(%q) should be invalid, got nil", name)
+		}
 	}
 }
 

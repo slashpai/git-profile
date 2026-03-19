@@ -14,6 +14,10 @@ type AddCmd struct {
 }
 
 func (cmd *AddCmd) Run(ctx *Context) error {
+	if err := config.ValidateProfileName(cmd.Name); err != nil {
+		return err
+	}
+
 	cfg, err := config.Load(ctx.ConfigPath)
 	if err != nil {
 		return err

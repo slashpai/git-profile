@@ -4,11 +4,21 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
 	"go.yaml.in/yaml/v3"
 )
+
+var validProfileName = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9._-]*$`)
+
+func ValidateProfileName(name string) error {
+	if !validProfileName.MatchString(name) {
+		return fmt.Errorf("invalid profile name %q: must start with a letter or digit and contain only letters, digits, hyphens, underscores, or dots", name)
+	}
+	return nil
+}
 
 type Profile struct {
 	Name       string `yaml:"name"`
@@ -22,12 +32,12 @@ type Config struct {
 	Profiles map[string]Profile `yaml:"profiles"`
 }
 
-func DefaultConfigPath() string {
+func DefaultConfigPath() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		home = "."
+		return "", fmt.Errorf("unable to determine home directory: %w", err)
 	}
-	return filepath.Join(home, ".git-profiles.yaml")
+	return filepath.Join(home, ".git-profiles.yaml"), nil
 }
 
 func Load(path string) (*Config, error) {
