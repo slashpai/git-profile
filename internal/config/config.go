@@ -32,6 +32,19 @@ type Config struct {
 	Profiles map[string]Profile `yaml:"profiles"`
 }
 
+func ValidateConfigPath(path string) (string, error) {
+	cleaned := filepath.Clean(path)
+	abs, err := filepath.Abs(cleaned)
+	if err != nil {
+		return "", fmt.Errorf("resolving config path: %w", err)
+	}
+	ext := filepath.Ext(abs)
+	if ext != ".yaml" && ext != ".yml" {
+		return "", fmt.Errorf("config path %q must have a .yaml or .yml extension", abs)
+	}
+	return abs, nil
+}
+
 func DefaultConfigPath() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {

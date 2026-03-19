@@ -43,6 +43,10 @@ func main() {
 		},
 		kong.UsageOnError(),
 	)
-	err = ctx.Run(&Context{ConfigPath: cli.Config})
+	cfgPath, err := config.ValidateConfigPath(cli.Config)
+	if err != nil {
+		ctx.FatalIfErrorf(err)
+	}
+	err = ctx.Run(&Context{ConfigPath: cfgPath})
 	ctx.FatalIfErrorf(err)
 }

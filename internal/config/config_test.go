@@ -39,6 +39,38 @@ func TestValidateProfileName(t *testing.T) {
 	}
 }
 
+func TestValidateConfigPath(t *testing.T) {
+	tests := []struct {
+		path    string
+		wantErr bool
+	}{
+		{"~/.git-profiles.yaml", false},
+		{"/tmp/profiles.yml", false},
+		{"relative/path/config.yaml", false},
+		{"/etc/passwd", true},
+		{"/tmp/config.json", true},
+		{"../../.bashrc", true},
+		{"/tmp/data.txt", true},
+		{"/tmp/config.yaml", false},
+	}
+	for _, tt := range tests {
+		_, err := ValidateConfigPath(tt.path)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("ValidateConfigPath(%q) error = %v, wantErr %v", tt.path, err, tt.wantErr)
+		}
+	}
+}
+
+func TestValidateConfigPathNormalizesTraversal(t *testing.T) {
+	path, err := ValidateConfigPath("/home/user/../user/config.yaml")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if strings.Contains(path, "..") {
+		t.Errorf("path should be cleaned, got %q", path)
+	}
+}
+
 func TestLoadNonExistentFile(t *testing.T) {
 	cfg, err := Load("/tmp/does-not-exist-git-profile-test.yaml")
 	if err != nil {
