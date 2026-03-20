@@ -20,6 +20,7 @@ type CLI struct {
 	List   ListCmd   `cmd:"" aliases:"ls" help:"List all saved git profiles."`
 	Use    UseCmd    `cmd:"" help:"Apply a git profile to the current repo or globally."`
 	Show   ShowCmd   `cmd:"" help:"Show the active git identity."`
+	Verify VerifyCmd `cmd:"" help:"Check if current git identity matches a saved profile."`
 }
 
 type Context struct {

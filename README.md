@@ -106,6 +106,28 @@ Updating profile "work" (press Enter to keep current value):
 Profile "work" updated.
 ```
 
+### Verify current identity
+
+```bash
+git-profile verify
+```
+
+Checks if the current repo's git identity matches any saved profile:
+
+```shell
+Current identity matches profile "personal".
+```
+
+If no match is found:
+
+```shell
+Warning: current identity does not match any saved profile.
+  user.name  = John Doe
+  user.email = john@unknown.com
+
+Use 'git-profile list' to see saved profiles or 'git-profile use <name>' to switch.
+```
+
 ### Remove a profile
 
 ```bash
