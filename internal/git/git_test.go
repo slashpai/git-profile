@@ -92,6 +92,58 @@ func TestGetConfigNotSet(t *testing.T) {
 	}
 }
 
+func TestUnsetConfigNotSet(t *testing.T) {
+	initTempRepo(t)
+
+	err := UnsetConfig(ScopeLocal, "test.neverset")
+	if err == nil {
+		t.Error("expected error when unsetting a key that was never set")
+	}
+}
+
+func TestSwitchProfileClearsStaleKeys(t *testing.T) {
+	initTempRepo(t)
+
+	if err := SetConfig(ScopeLocal, "user.name", "Alice"); err != nil {
+		t.Fatal(err)
+	}
+	if err := SetConfig(ScopeLocal, "user.email", "alice@work.com"); err != nil {
+		t.Fatal(err)
+	}
+	if err := SetConfig(ScopeLocal, "test.signingkey", "KEY123"); err != nil {
+		t.Fatal(err)
+	}
+	if err := SetConfig(ScopeLocal, "test.gpgsign", "true"); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := SetConfig(ScopeLocal, "user.name", "Bob"); err != nil {
+		t.Fatal(err)
+	}
+	if err := SetConfig(ScopeLocal, "user.email", "bob@home.com"); err != nil {
+		t.Fatal(err)
+	}
+	_ = UnsetConfig(ScopeLocal, "test.signingkey")
+	_ = UnsetConfig(ScopeLocal, "test.gpgsign")
+
+	name, err := GetConfig("user.name")
+	if err != nil || name != "Bob" {
+		t.Errorf("user.name = %q, want %q", name, "Bob")
+	}
+	email, err := GetConfig("user.email")
+	if err != nil || email != "bob@home.com" {
+		t.Errorf("user.email = %q, want %q", email, "bob@home.com")
+	}
+	_, err = GetConfig("test.signingkey")
+	if err == nil {
+		t.Error("test.signingkey should be unset after switching profile")
+	}
+	_, err = GetConfig("test.gpgsign")
+	if err == nil {
+		t.Error("test.gpgsign should be unset after switching profile")
+	}
+}
+
 func TestSetConfigOutsideRepo(t *testing.T) {
 	origDir, _ := os.Getwd()
 	dir := t.TempDir()

@@ -41,23 +41,25 @@ func (cmd *UseCmd) Run(ctx *Context) error {
 		if err := git.SetConfig(scope, "user.signingkey", profile.SigningKey); err != nil {
 			return err
 		}
+	} else {
+		_ = git.UnsetConfig(scope, "user.signingkey")
 	}
 
-	gpgVal := "false"
 	if profile.GPGSign {
-		gpgVal = "true"
-	}
-	if err := git.SetConfig(scope, "commit.gpgsign", gpgVal); err != nil {
-		return err
+		if err := git.SetConfig(scope, "commit.gpgsign", "true"); err != nil {
+			return err
+		}
+	} else {
+		_ = git.UnsetConfig(scope, "commit.gpgsign")
 	}
 
 	fmt.Printf("Switched to profile %q (%s).\n", cmd.Name, scopeLabel)
-	fmt.Printf("  user.name      = %s\n", profile.Name)
-	fmt.Printf("  user.email     = %s\n", profile.Email)
+	fmt.Printf("  user.name       = %s\n", profile.Name)
+	fmt.Printf("  user.email      = %s\n", profile.Email)
 	if profile.SigningKey != "" {
 		fmt.Printf("  user.signingkey = %s\n", profile.SigningKey)
 	}
-	fmt.Printf("  commit.gpgsign = %s\n", gpgVal)
+	fmt.Printf("  commit.gpgsign  = %v\n", profile.GPGSign)
 
 	return nil
 }
