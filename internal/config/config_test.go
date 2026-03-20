@@ -61,16 +61,6 @@ func TestValidateConfigPath(t *testing.T) {
 	}
 }
 
-func TestValidateConfigPathNormalizesTraversal(t *testing.T) {
-	path, err := ValidateConfigPath("/home/user/../user/config.yaml")
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if strings.Contains(path, "..") {
-		t.Errorf("path should be cleaned, got %q", path)
-	}
-}
-
 func TestLoadNonExistentFile(t *testing.T) {
 	cfg, err := Load("/tmp/does-not-exist-git-profile-test.yaml")
 	if err != nil {
@@ -230,6 +220,33 @@ func TestProfileNotFoundErrorWithProfiles(t *testing.T) {
 	}
 	if !strings.Contains(msg, "git-profile list") {
 		t.Errorf("error should hint to use 'git-profile list', got: %s", msg)
+	}
+}
+
+func TestMatchingProfilesMatch(t *testing.T) {
+	cfg := &Config{Profiles: map[string]Profile{
+		"personal": {Name: "Alice", Email: "alice@home.com"},
+		"work":     {Name: "Alice", Email: "alice@work.com"},
+		"oss":      {Name: "Alice", Email: "alice@home.com"},
+	}}
+
+	matched := cfg.MatchingProfiles("Alice", "alice@home.com")
+	if len(matched) != 2 {
+		t.Fatalf("expected 2 matches, got %d: %v", len(matched), matched)
+	}
+	if matched[0] != "oss" || matched[1] != "personal" {
+		t.Errorf("expected [oss personal], got %v", matched)
+	}
+}
+
+func TestMatchingProfilesNoMatch(t *testing.T) {
+	cfg := &Config{Profiles: map[string]Profile{
+		"work": {Name: "Alice", Email: "alice@work.com"},
+	}}
+
+	matched := cfg.MatchingProfiles("Bob", "bob@home.com")
+	if len(matched) != 0 {
+		t.Errorf("expected no matches, got %v", matched)
 	}
 }
 

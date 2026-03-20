@@ -118,6 +118,22 @@ Checks if the current repo's git identity matches any saved profile:
 Current identity matches profile "personal".
 ```
 
+Use `--show-identity` / `-s` to also display the full git identity:
+
+```bash
+git-profile verify -s
+```
+
+```shell
+Current identity matches profile "personal".
+
+Current git identity:
+  user.name        = John Doe
+  user.email       = john@personal.com
+  user.signingkey  = ABC123DEF
+  commit.gpgsign   = true
+```
+
 If no match is found:
 
 ```shell

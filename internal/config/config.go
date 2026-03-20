@@ -74,6 +74,17 @@ func Load(path string) (*Config, error) {
 	return &cfg, nil
 }
 
+func (cfg *Config) MatchingProfiles(name, email string) []string {
+	var matched []string
+	for pname, p := range cfg.Profiles {
+		if p.Name == name && p.Email == email {
+			matched = append(matched, pname)
+		}
+	}
+	sort.Strings(matched)
+	return matched
+}
+
 func (cfg *Config) ProfileNotFoundError(name string) error {
 	if len(cfg.Profiles) == 0 {
 		return fmt.Errorf("profile %q not found (no profiles configured, use 'git-profile add <name>' to create one)", name)
