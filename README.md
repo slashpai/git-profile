@@ -68,10 +68,12 @@ git-profile use work --global
 > [!WARNING]
 > Using `--global` will overwrite your global git config for `user.name`, `user.email`, `user.signingkey`, and `commit.gpgsign`.
 
-### Show current identity
+### Show current identity (default)
 
 ```bash
 git-profile show
+# or simply
+git-profile
 ```
 
 ```shell

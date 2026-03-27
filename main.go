@@ -19,7 +19,7 @@ type CLI struct {
 	Remove RemoveCmd `cmd:"" aliases:"rm" help:"Remove a saved git profile."`
 	List   ListCmd   `cmd:"" aliases:"ls" help:"List all saved git profiles."`
 	Use    UseCmd    `cmd:"" help:"Apply a git profile to the current repo or globally."`
-	Show   ShowCmd   `cmd:"" help:"Show the active git identity."`
+	Show   ShowCmd   `cmd:"" default:"withargs" help:"Show the active git identity (default)."`
 	Verify VerifyCmd `cmd:"" help:"Check if current git identity matches a saved profile."`
 }
 
